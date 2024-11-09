@@ -23,23 +23,31 @@ Improvement:
 
 -Age specific enviroments for age
 
-## User Stories
+## MVP User Stories
 
-- As a player I would like to create my own D&D character and have it associated in my profile. Whilst setting up the character I would like to easily see the rules so I can create my character in accordance with those rules.
+- As a user I want to be able to register or login securely and my details to be stored so that I can edit my profile.
 
-- As a DM I would like to be able save the source material which includes; maps, monsters, notes.
+- As a user I want to be able to build my DnD profile so that other users can easily see my details such age range, game experience, game play preferences, my characters, if I am a DM, and show active games and groups I am involved in.
 
-- As a DM and a player I would like to access the standard spells, characters, maps, as well the ability to create my own.
+- As a new user and new to DnD I would like the website to be inuitive and easy to navigate so that I can access the rules of play and resources needed to play via a user freindly compendium where ever I am on the web app.
 
-- As a player I will expect to be able to download any source material including characters, notes, maps so that I can choose to play offline too.
+- As a user who with experience of DnD I want to be able to navigate the website easily to find likeminded players and DMs so I can start playing quickly via a message board for the group, its players and the DM.
 
-- As a player I would like a search feature on the app so that I can easily find individuals and groups within the game which allow me to find groups and individuals with similar interests, game play experience and age range.
+- As a user I expect to be able to create DnD characters which can then be saved and associated with my profile, and can also be edited and deleted as needs be.
+
+- As a user, if I am a DM I expect to be able to save the source material including maps, monsters and notes which I can then edit and delete as needs be.
+
+- As a user, if I am a DM I expect to able to save the source material including maps, monsters and notes which I can update, edit and delete as needs be.
+
+- As a user I would like to be able to use online dice as part of the game play.
+
+- As a user I want to be able to download my characters, maps and resources so I can print them and play offline if I choose to.
+
+## Stretch Goals for Product
 
 - As a player expect the web app to be moderated by admins ensuring safe play and a standard set of predefined rules for online conduct.
 
 - As a user I want to be able create a group where the DM can be defined as well as players and the ability to communicate with the group.
-
-- As a user I would like be able update and delete characters, maps and notes.
 
 ## Wireframe
 
