@@ -29,21 +29,19 @@ Improvement:
 
 - As a user I want to be able to build my DnD profile so that other users can easily see my details such age range, game experience, game play preferences, my characters, if I am a DM, and show active games and groups I am involved in.
 
+- As a user I expect to be able to create DnD characters which can then be saved and associated with my profile, and can also be edited and deleted as needs be.
+
 - As a new user and new to DnD I would like the website to be inuitive and easy to navigate so that I can access the rules of play and resources needed to play via a user freindly compendium where ever I am on the web app.
 
 - As a user who with experience of DnD I want to be able to navigate the website easily to find likeminded players and DMs so I can start playing quickly via a message board for the group, its players and the DM.
 
-- As a user I expect to be able to create DnD characters which can then be saved and associated with my profile, and can also be edited and deleted as needs be.
+- As a user I would like to be able to use online dice as part of the game play.
+
+## Stretch Goals for Product
 
 - As a user, if I am a DM I expect to be able to save the source material including maps, monsters and notes which I can then edit and delete as needs be.
 
-- As a user, if I am a DM I expect to able to save the source material including maps, monsters and notes which I can update, edit and delete as needs be.
-
-- As a user I would like to be able to use online dice as part of the game play.
-
 - As a user I want to be able to download my characters, maps and resources so I can print them and play offline if I choose to.
-
-## Stretch Goals for Product
 
 - As a player expect the web app to be moderated by admins ensuring safe play and a standard set of predefined rules for online conduct.
 
