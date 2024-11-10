@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import GlobalDiceRoller from "./components/GlobalDiceRoller";
 
 export default function Home() {
   const [showCompendium, setShowCompendium] = useState(false);
@@ -67,58 +68,34 @@ export default function Home() {
 
       {/* Show Compendium Button */}
       <button
-        className="fixed bottom-4 right-4 z-50 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
+        className="fixed bottom-4 right-20 z-50 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
         onClick={() => setShowCompendium(!showCompendium)}
       >
         {showCompendium ? "Hide Compendium" : "Show Compendium"}
       </button>
 
       {showCompendium && (
-        <nav className="fixed bottom-16 right-4 z-50 bg-[#5A352A] rounded-lg shadow-lg p-4">
+        <nav className="fixed bottom-16 right-20 z-50 bg-[#5A352A] rounded-lg shadow-lg p-4">
           <ul>
             <li>
-              <Link
-                href="/monsters"
-                className="block px-4 py-2 hover:bg-[#7A4A3B] text-[#FFD700] transition"
-              >
-                Monster Manual →
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/spells"
-                className="block px-4 py-2 hover:bg-[#7A4A3B] text-[#FFD700] transition"
-              >
-                Spell List →
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/players-guide"
-                className="block px-4 py-2 hover:bg-[#7A4A3B] text-[#FFD700] transition"
-              >
-                Player's Guide →
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/dm-guide"
-                className="block px-4 py-2 hover:bg-[#7A4A3B] text-[#FFD700] transition"
-              >
-                DM Guide →
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/rules"
-                className="block px-4 py-2 hover:bg-[#7A4A3B] text-[#FFD700] transition"
-              >
-                Rules Guide →
+              <Link href="/compendium" legacyBehavior>
+                <a className="block px-4 py-2 hover:bg-[#7A4A3B] text-[#FFD700] transition">
+                  Compendium →
+                </a>
               </Link>
             </li>
           </ul>
         </nav>
       )}
+
+      {/* Compendium Link Button */}
+      <div className="fixed bottom-4 left-4">
+        <Link href="/compendium" legacyBehavior>
+          <a className="p-2 bg-yellow-600 text-white rounded-full shadow-lg hover:bg-yellow-700">
+            Go to Compendium
+          </a>
+        </Link>
+      </div>
 
       {/* Footer */}
       <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-6 bg-[#5A352A]">
@@ -153,6 +130,8 @@ export default function Home() {
           D&D Beyond
         </a>
       </footer>
+
+      <GlobalDiceRoller />
     </div>
   );
 }
