@@ -1,4 +1,5 @@
-import FullSidebarAccordion from './components/SideDrawerAccordian';
+import FullSidebarAccordion from './components/SidebarAccordian';
+import GlobalDiceRoller from './components/GlobalDiceRoller';
 import './globals.css'
 export const metadata = {
   title: 'Next.js',
@@ -10,6 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <FullSidebarAccordion />
+        <GlobalDiceRoller />
         {children}
       </body>
     </html>
