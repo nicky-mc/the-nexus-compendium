@@ -1,6 +1,9 @@
+// components/SidebarAccordian.jsx
+// components/SidebarAccordian.jsx
 "use client";
 
 import { useState, useEffect } from "react";
+import { useCompendium } from '../context/CompendiumContext';
 
 const API_SECTIONS = {
   races: "Races",
@@ -19,13 +22,13 @@ const API_SECTIONS = {
   languages: "Languages",
 };
 
-export default function FullSidebarAccordion({ closeCompendium }) {
+export default function FullSidebarAccordion() {
+  const { showCompendium, setShowCompendium } = useCompendium();
   const [sections, setSections] = useState({});
   const [expandedSection, setExpandedSection] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -141,11 +144,10 @@ export default function FullSidebarAccordion({ closeCompendium }) {
     <>
       <button
         onClick={() => {
-          setSidebarVisible(!sidebarVisible);
-          if (sidebarVisible) closeCompendium();
+          setShowCompendium(!showCompendium);
         }}
         className={`fixed top-4 right-4 z-50 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 ${
-          sidebarVisible ? "hidden" : ""
+          showCompendium ? "hidden" : ""
         }`}
       >
         Open Companion
@@ -153,13 +155,13 @@ export default function FullSidebarAccordion({ closeCompendium }) {
 
       <aside
         className={`fixed right-0 top-16 h-full bg-gray-800 text-white p-4 overflow-y-auto w-80 transition-transform ${
-          sidebarVisible ? "translate-x-0" : "translate-x-full"
+          showCompendium ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Nexus Compendium Companion</h2>
           <button
-            onClick={() => setSidebarVisible(false)}
+            onClick={() => setShowCompendium(false)}
             className="text-white bg-gray-600 hover:bg-gray-500 rounded-full p-2"
           >
             ✕
