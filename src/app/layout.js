@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar";
 export const metadata = {
   title: 'The  Nexus',
   description: 'Your D&D companion app',
-}
+};
  main
 export default function RootLayout({ children }) {
   return (
