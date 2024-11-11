@@ -148,7 +148,7 @@ export default function FullSidebarAccordion({ closeCompendium }) {
           sidebarVisible ? "hidden" : ""
         }`}
       >
-        Open Compendium
+        Open Companion
       </button>
 
       <aside
@@ -157,7 +157,7 @@ export default function FullSidebarAccordion({ closeCompendium }) {
         }`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">D&D 5e Compendium</h2>
+          <h2 className="text-2xl font-bold">Nexus Compendium Companion</h2>
           <button
             onClick={() => setSidebarVisible(false)}
             className="text-white bg-gray-600 hover:bg-gray-500 rounded-full p-2"
