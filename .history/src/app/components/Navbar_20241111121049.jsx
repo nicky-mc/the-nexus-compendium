@@ -31,7 +31,7 @@ export default function Navbar() {
               The Nexus
             </Link>
           </div>
-
+          <div></div>
           <div className="flex items-center gap-4">
             <SignInButton>
               <UserButton />
