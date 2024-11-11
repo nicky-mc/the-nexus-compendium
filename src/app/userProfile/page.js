@@ -20,8 +20,8 @@ export default async function createProfilePage() {
 
     try {
       await db.query(
-        `INSERT INTO users (name, username, bio, profile_picture_url, clerk_user_id)
-          VALUES ($1, $2, $3, $4, $5)`,
+        `INSERT INTO users (clerk_id, name, username, user_bio, user_email, profile_picture_url,)
+          VALUES ($1, $2, $3, $4, $5, $6)`,
         [
           formData.name,
           formData.username,
