@@ -1,16 +1,9 @@
 // components/Navbar.jsx
 "use client";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import FullSidebarAccordion from "./SidebarAccordian";
-import {
-  UserButton,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-} from "@clerk/nextjs";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import FullSidebarAccordion from './SidebarAccordian';
 
 export default function Navbar() {
   const [showCompendium, setShowCompendium] = useState(false);
@@ -31,17 +24,10 @@ export default function Navbar() {
               The Nexus
             </Link>
           </div>
-
+          
           <div className="flex items-center gap-4">
-            <SignInButton>
-              <UserButton />
-            </SignInButton>
-            <SignedOut>
-              <SignInButton mode="modal">Sign In</SignInButton>
-              <SignUpButton>Sign Up</SignUpButton>
-            </SignedOut>
-            <Link
-              href="/compendium"
+            <Link 
+              href="/compendium" 
               className="text-[#F4ECE4] hover:text-[#FFD700] transition"
             >
               Compendium
@@ -50,7 +36,7 @@ export default function Navbar() {
               onClick={() => setShowCompendium(!showCompendium)}
               className="text-[#F4ECE4] hover:text-[#FFD700] transition"
             >
-              {showCompendium ? "X" : "Nexus Companion"}
+              {showCompendium ? 'X' : 'Nexus Companion'}
             </button>
           </div>
         </div>

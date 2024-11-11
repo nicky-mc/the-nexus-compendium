@@ -31,8 +31,7 @@ export default function Navbar() {
               The Nexus
             </Link>
           </div>
-
-          <div className="flex items-center gap-4">
+          <div>
             <SignInButton>
               <UserButton />
             </SignInButton>
@@ -40,6 +39,8 @@ export default function Navbar() {
               <SignInButton mode="modal">Sign In</SignInButton>
               <SignUpButton>Sign Up</SignUpButton>
             </SignedOut>
+          </div>
+          <div className="flex items-center gap-4">
             <Link
               href="/compendium"
               className="text-[#F4ECE4] hover:text-[#FFD700] transition"
