@@ -2,8 +2,6 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import FullSidebarAccordion from "./SidebarAccordian";
 import {
   UserButton,
   SignInButton,
@@ -11,9 +9,10 @@ import {
   SignedIn,
   SignedOut,
 } from "@clerk/nextjs";
+import { useCompendium } from '../context/CompendiumContext';
 
 export default function Navbar() {
-  const [showCompendium, setShowCompendium] = useState(false);
+  const { showCompendium, setShowCompendium } = useCompendium();
 
   return (
     <nav className="bg-[#5A352A] shadow-lg">
@@ -55,7 +54,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      {showCompendium && <FullSidebarAccordion />}
     </nav>
   );
 }
