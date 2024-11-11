@@ -7,7 +7,6 @@ export const metadata = {
   title: 'The  Nexus',
   description: 'Your D&D companion app',
 }
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
