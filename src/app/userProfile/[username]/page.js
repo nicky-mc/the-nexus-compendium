@@ -1,8 +1,11 @@
-import { db } from "@/utils/dbConnection";
+import { db } from "@/app/utils/dbconnection";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
 import * as React from "react";
 import { redirect } from "next/navigation";
+// TODO Update form to only update bio, or any other features that we want to add.
+// TODO Update the db, where clerk_id = user.id.
+// TODO Update the values to what the user has in the form.
 
 export default async function createProfilePage() {
   const { userId } = await auth();
@@ -23,13 +26,7 @@ export default async function createProfilePage() {
         `INSERT INTO users (clerk_id, name, username, user_bio, user_email, profile_picture_url,)
 
           VALUES ($1, $2, $3, $4, $5, $6)`,
-        [
-          formData.name,
-          formData.username,
-          formData.bio,
-          formData.profile_picture_url,
-          formData.clerk_id,
-        ]
+        [formData.name, formData.username, formData.bio, formData.profile_picture_url, formData.clerk_id]
       );
 
       revalidatePath(`/user/${userId}`);
@@ -42,9 +39,7 @@ export default async function createProfilePage() {
     <div>
       <div className="formContainer">
         <div>
-          <h1 className="text-center text-xl font-bold">
-            Create your profile for others to see
-          </h1>
+          <h1 className="text-center text-xl font-bold">Create your profile for others to see</h1>
 
           <form action={createProfile} className="space-y-4">
             <div className="form-spacing">
