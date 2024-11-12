@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# The Nexsus a D&D Campaign Companion and Compendium
 
-## Getting Started
+## The Team
 
-First, run the development server:
+- Alex Buck
+- Anthony Ricketts
+- Thomas Harvey
+- Nicky Mortoza-Cowles
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Description
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Problem Domain
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+D&D Beyond is excellent for managing campaigns but lacks offline functionality and collaborative features for campaign notes.
+Improvement:
+-Add an offline mode for campaign access without the internet and real-time collaborative note-taking for players and DMs.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-Paywall puts beginners of from use so free at point of use.
 
-## Learn More
+-Create Groups- for those that have simalar interests or who play together regularily etc or a group for Dungeon Masters etc.
 
-To learn more about Next.js, take a look at the following resources:
+-Moderation- Groups can set expectations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-Age specific enviroments for age
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## MVP User Stories
 
-## Deploy on Vercel
+- As a user I want to be able to register or login securely and my details to be stored so that I can edit my profile.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- As a user I want to be able to build my DnD profile so that other users can easily see my details such age range, game experience, game play preferences, my characters, if I am a DM, and show active games and groups I am involved in.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- As a user I expect to be able to create DnD characters which can then be saved and associated with my profile, and can also be edited and deleted as needs be.
+
+- As a new user and new to DnD I would like the website to be inuitive and easy to navigate so that I can access the rules of play and resources needed to play via a user freindly compendium where ever I am on the web app.
+
+- As a user who with experience of DnD I want to be able to navigate the website easily to find likeminded players and DMs so I can start playing quickly via a message board for the group, its players and the DM.
+
+- As a user I would like to be able to use online dice as part of the game play.
+
+## Stretch Goals for Product
+
+- As a user, if I am a DM I expect to be able to save the source material including maps, monsters and notes which I can then edit and delete as needs be.
+
+- As a user I want to be able to download my characters, maps and resources so I can print them and play offline if I choose to.
+
+- As a player expect the web app to be moderated by admins ensuring safe play and a standard set of predefined rules for online conduct.
+
+- As a user I want to be able create a group where the DM can be defined as well as players and the ability to communicate with the group.
+
+## Wireframe
+
+## How to use
+
+## Lighthouse Report
+
+## Reflections
+
+Please mention the requirements you met and which goals you achieved for this assignment.
+
+🎯 Were there any requirements or goals that you were not quite able to achieve?
+
+🎯 If so, could you please tell us what was it that you found difficult about these tasks?
+
+What went really well and what could have gone better?
+Detailing useful external sources that helped you complete the assignment (e.g Youtube tutorials).
+Describing errors or bugs you encountered while completing your assignment.
+
+References:
+Third-party APIs, CSS resets, icons, images...
