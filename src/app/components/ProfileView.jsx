@@ -7,18 +7,10 @@ export default function ProfileView({ user }) {
 
   return (
     <div className="space-y-4">
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Bio:</strong> {user.user_bio}</p>
-      <p><strong>Profile Picture:</strong></p>
-      {user.profile_picture_url ? (
-        <img
-          src={user.profile_picture_url}
-          alt="Profile"
-          className="w-32 h-32 object-cover rounded-full"
-        />
-      ) : (
-        <p>No profile picture set.</p>
-      )}
+      <h2 className="text-xl font-semibold">Profile Details</h2>
+      {/* Render other user-specific details here if applicable */}
+      <p><strong>Email:</strong> {user.email || "Not provided"}</p>
+      {/* Any additional profile information */}
     </div>
   );
 }
