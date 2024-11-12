@@ -23,7 +23,8 @@ export default function ProfileForm({ user, userId }) {
       });
 
       if (response.ok) {
-        router.push(`/user/${userId}`);
+        // Redirect to profile view page with edit=false after successful save
+        router.push(`/userProfile/${updatedData.username}?edit=false`);
       } else {
         const errorData = await response.json();
         console.error(`Error ${user ? 'updating' : 'creating'} profile:`, errorData);
@@ -34,43 +35,57 @@ export default function ProfileForm({ user, userId }) {
   }
 
   return (
-    <form onSubmit={async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      await saveProfile(formData);
-    }}>
-      <div className="form-spacing">
-        <label htmlFor="username">Username:</label>
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        await saveProfile(formData);
+      }}
+      className="space-y-4"
+    >
+      <div className="form-control">
+        <label htmlFor="username" className="label">
+          <span className="label-text">Username:</span>
+        </label>
         <textarea
           name="username"
           id="username"
+          className="textarea textarea-bordered"
           defaultValue={user?.username || ""}
           required
         />
       </div>
 
-      <div className="form-spacing">
-        <label htmlFor="user_bio">Bio:</label>
+      <div className="form-control">
+        <label htmlFor="user_bio" className="label">
+          <span className="label-text">Bio:</span>
+        </label>
         <textarea
           name="user_bio"
           id="user_bio"
+          className="textarea textarea-bordered"
           defaultValue={user?.user_bio || ""}
           required
         />
       </div>
 
-      <div className="form-spacing">
-        <label htmlFor="profile_picture_url">Profile Picture Url:</label>
+      <div className="form-control">
+        <label htmlFor="profile_picture_url" className="label">
+          <span className="label-text">Profile Picture URL:</span>
+        </label>
         <textarea
-          type="text"
           name="profile_picture_url"
           id="profile_picture_url"
+          className="textarea textarea-bordered"
           defaultValue={user?.profile_picture_url || ""}
         />
       </div>
-      <button className="createButton" type="submit">
-        {user ? 'Update Profile' : 'Create Profile'}
-      </button>
+
+      <div className="form-control mt-4">
+        <button className="btn btn-success w-full" type="submit">
+          {user ? 'Update Profile' : 'Create Profile'}
+        </button>
+      </div>
     </form>
   );
 }
