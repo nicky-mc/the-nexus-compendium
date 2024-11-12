@@ -1,4 +1,4 @@
-# Dungeons & Dragons campaign/character management and Social app
+# The Nexsus a D&D Campaign Companion and Compendium
 
 ## The Team
 
