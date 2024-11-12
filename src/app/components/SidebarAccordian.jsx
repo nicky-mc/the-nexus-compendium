@@ -172,7 +172,7 @@ export default function FullSidebarAccordion() {
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-2 rounded mb-4"
+          className="w-full text-black p-2 rounded mb-4"
         />
         <ul className="space-y-2">
           {Object.entries(API_SECTIONS).map(([key, label]) => (
