@@ -7,53 +7,98 @@ import { redirect } from "next/navigation";
 // TODO Update the db, where clerk_id = user.id.
 // TODO Update the values to what the user has in the form.
 
-export default async function createProfilePage() {
+export default async function editProfilePage() {
   const { userId } = await auth();
 
-  async function createProfile(formValues) {
+  const userResult = await db.query(
+    `SELECT * FROM users WHERE clerk_user_id = $1`,
+    [userId]
+  );
+
+  console.log("Fetched user result:", userResult.rows);
+
+  const user = userResult.rows?.[0] || null;
+
+  if (!user) {
+    console.error("User not found.");
+  }
+
+  async function updateProfile(formValues) {
     "use server";
-    const formData = {
+    const updatedData = {
       name: formValues.get("name"),
       username: formValues.get("username"),
-      bio: formValues.get("bio"),
+      user_bio: formValues.get("user_bio"),
+      user_email: formValues.get("user_email"),
       profile_picture_url: formValues.get("profile_picture_url"),
-      clerk_user_id: userId,
     };
-    console.log(formData);
 
     try {
       await db.query(
-        `INSERT INTO users (clerk_id, name, username, user_bio, user_email, profile_picture_url,)
-
-          VALUES ($1, $2, $3, $4, $5, $6)`,
-        [formData.name, formData.username, formData.bio, formData.profile_picture_url, formData.clerk_id]
+        `UPDATE users
+         SET name = $2, username = $3, user_bio = $4, user_email $5, profile_picture_url = $6
+         WHERE clerk_user_id = $1`,
+        [
+          updatedData.name,
+          updatedData.username,
+          updatedData.user_bio,
+          updateData.user_email,
+          updatedData.profile_picture_url,
+          userId,
+        ]
       );
-
       revalidatePath(`/user/${userId}`);
       redirect(`/user/${userId}`);
     } catch (error) {
-      console.error("Error creating profile:", error);
+      console.error("Error updating profile:", error);
     }
   }
+
   return (
     <div>
+      <h1>Edit Profile Page</h1>
       <div className="formContainer">
         <div>
-          <h1 className="text-center text-xl font-bold">Create your profile for others to see</h1>
-
-          <form action={createProfile} className="space-y-4">
+          <form action={updateProfile} className="space-y-4">
             <div className="form-spacing">
               <label htmlFor="name">Name:</label>
-              <textarea type="text" name="name" id="name" required />
+              <textarea
+                type="text"
+                name="name"
+                id="name"
+                defaultValue={user?.name || ""}
+                required
+              />
             </div>
             <div className="form-spacing">
               <label htmlFor="username">Username:</label>
-              <textarea type="text" name="username" id="username" required />
+              <textarea
+                type="text"
+                name="username"
+                id="username"
+                defaultValue={user?.username || ""}
+                required
+              />
             </div>
 
             <div className="form-spacing">
               <label htmlFor="bio">Bio:</label>
-              <textarea name="bio" id="bio" required />
+              <textarea
+                name="user_bio"
+                id="_user_bio"
+                defaultValue={user?.user_bio || ""}
+                required
+              />
+            </div>
+
+            <div className="form-spacing">
+              <label htmlFor="user_email">Email:</label>
+              <textarea
+                name="user_email"
+                id="_user_email"
+                defaultValue={user?.user_email || ""}
+                required
+              />
             </div>
 
             <div className="form-spacing">
@@ -62,11 +107,11 @@ export default async function createProfilePage() {
                 type="text"
                 name="profile_picture_url"
                 id="profile_picture_url"
-                // required
+                defaultValue={user?.profile_picture_url || ""}
               />
             </div>
-            <button className="createButton" type="submit">
-              Create Profile
+            <button className="submit" type="submit">
+              Update Profile
             </button>
           </form>
         </div>
