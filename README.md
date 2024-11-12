@@ -1,4 +1,4 @@
-# The Nexsus a D&D Campaign Companion and Compendium
+# The Nexus a D&D Campaign Companion and Compendium
 
 ## The Team
 
