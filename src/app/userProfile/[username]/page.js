@@ -1,102 +1,83 @@
-import { db } from "@/app/utils/dbconnection";
+'use client';
 import { revalidatePath } from "next/cache";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs";
 import * as React from "react";
-import { redirect } from "next/navigation";
-// TODO Update form to only update bio, or any other features that we want to add.
-// TODO Update the db, where clerk_id = user.id.
-// TODO Update the values to what the user has in the form.
+import { useRouter } from "next/navigation";
 
-export default async function editProfilePage() {
-  const { userId } = await auth();
+export default function ProfilePage() {
+  const router = useRouter();
+  const [user, setUser] = React.useState(null);
 
-  const userResult = await db.query(
-    `SELECT * FROM users WHERE clerk_user_id = $1`,
-    [userId]
-  );
+  React.useEffect(() => {
+    async function fetchUser() {
+      const { userId } = await auth();
+      const response = await fetch(`/api/user`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-  console.log("Fetched user result:", userResult.rows);
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+    }
 
-  const user = userResult.rows?.[0] || null;
+    fetchUser();
+  }, []);
 
-  if (!user) {
-    console.error("User not found.");
-  }
-
-  async function updateProfile(formValues) {
-    "use server";
-    const updatedData = {
-      name: formValues.get("name"),
-      username: formValues.get("username"),
-      user_bio: formValues.get("user_bio"),
-      user_email: formValues.get("user_email"),
+  async function saveProfile(formValues) {
+    const formData = {
+      
+      bio: formValues.get("user_bio"),
       profile_picture_url: formValues.get("profile_picture_url"),
     };
+    console.log(formData);
 
     try {
-      await db.query(
-        `UPDATE users
-         SET name = $2, username = $3, user_bio = $4, user_email $5, profile_picture_url = $6
-         WHERE clerk_user_id = $1`,
-        [
-          updatedData.name,
-          updatedData.username,
-          updatedData.user_bio,
-          updateData.user_email,
-          updatedData.profile_picture_url,
-          userId,
-        ]
-      );
-      revalidatePath(`/user/${userId}`);
-      redirect(`/user/${userId}`);
+      const method = user ? 'PUT' : 'POST';
+      const response = await fetch('/api/user', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        revalidatePath(`/user/${user?.clerk_user_id}`);
+        router.push(`/user/${user?.clerk_user_id}`);
+      } else {
+        console.error(`Error ${user ? 'updating' : 'creating'} profile:`, await response.json());
+      }
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error(`Error ${user ? 'updating' : 'creating'} profile:`, error);
     }
   }
 
   return (
     <div>
-      <h1>Edit Profile Page</h1>
       <div className="formContainer">
         <div>
-          <form action={updateProfile} className="space-y-4">
-            <div className="form-spacing">
-              <label htmlFor="name">Name:</label>
-              <textarea
-                type="text"
-                name="name"
-                id="name"
-                defaultValue={user?.name || ""}
-                required
-              />
-            </div>
-            <div className="form-spacing">
-              <label htmlFor="username">Username:</label>
-              <textarea
-                type="text"
-                name="username"
-                id="username"
-                defaultValue={user?.username || ""}
-                required
-              />
-            </div>
+          <h1 className="text-center text-xl font-bold">
+            {user ? 'Update your profile' : 'Create your profile for others to see'}
+          </h1>
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            const formValues = new FormData(e.target);
+            await saveProfile(formValues);
+          }}>
+           
 
             <div className="form-spacing">
-              <label htmlFor="bio">Bio:</label>
+              <label htmlFor="user_bio">Bio:</label>
               <textarea
                 name="user_bio"
-                id="_user_bio"
+                id="user_bio"
                 defaultValue={user?.user_bio || ""}
-                required
-              />
-            </div>
-
-            <div className="form-spacing">
-              <label htmlFor="user_email">Email:</label>
-              <textarea
-                name="user_email"
-                id="_user_email"
-                defaultValue={user?.user_email || ""}
                 required
               />
             </div>
@@ -110,8 +91,8 @@ export default async function editProfilePage() {
                 defaultValue={user?.profile_picture_url || ""}
               />
             </div>
-            <button className="submit" type="submit">
-              Update Profile
+            <button className="createButton" type="submit">
+              {user ? 'Update Profile' : 'Create Profile'}
             </button>
           </form>
         </div>

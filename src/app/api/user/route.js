@@ -20,8 +20,8 @@ export async function POST(req) {
   const { username, bio, profile_picture_url } = await req.json();
   try {
     await db.query(
-      `INSERT INTO users ( user_bio, profile_picture_url, clerk_user_id)
-      VALUES ($1, $2,)`,
+      `INSERT INTO users (user_name, user_bio, profile_picture_url, clerk_user_id)
+      VALUES ($1, $2, $3, $4)`,
       [username, bio, profile_picture_url, userId]
     );
     return new Response(JSON.stringify({ message: 'User created successfully' }), { status: 201 });
@@ -33,13 +33,13 @@ export async function POST(req) {
 
 export async function PUT(req) {
   const { userId } = await auth();
-  const { username, user_bio, profile_picture_url } = await req.json();
+  const { name, username, user_bio, user_email, profile_picture_url } = await req.json();
   try {
     await db.query(
       `UPDATE users
-       SET user_name = $1, user_bio = $2, profile_picture_url = $3
-       WHERE clerk_user_id = $4`,
-      [username, user_bio, profile_picture_url, userId]
+       SET name = $1, username = $2, user_bio = $3, user_email = $4, profile_picture_url = $5
+       WHERE clerk_user_id = $6`,
+      [name, username, user_bio, user_email, profile_picture_url, userId]
     );
     return new Response(JSON.stringify({ message: 'User updated successfully' }), { status: 200 });
   } catch (error) {
