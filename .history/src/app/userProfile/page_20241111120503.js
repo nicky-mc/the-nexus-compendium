@@ -14,13 +14,13 @@ export default async function createProfilePage() {
       username: formValues.get("username"),
       bio: formValues.get("bio"),
       profile_picture_url: formValues.get("profile_picture_url"),
-      clerk_user_id: userId,
+      clerk_id: userId,
     };
     console.log(formData);
 
     try {
       await db.query(
-        `INSERT INTO users (name, username, bio, profile_picture_url, clerk_user_id)
+        `INSERT INTO users (name, username, bio, profile_picture_url, clerk_id)
           VALUES ($1, $2, $3, $4, $5)`,
         [
           formData.name,
