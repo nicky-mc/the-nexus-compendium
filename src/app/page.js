@@ -1,8 +1,12 @@
 // app/page.js
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useUser } from '@clerk/nextjs'; // Assuming you're using Clerk for authentication
 
 export default function Home() {
+  const { user } = useUser(); // Get the current user
+
   return (
     <div className="min-h-screen bg-[url('/parchment-texture.jpeg')] bg-cover relative">
       <div className="absolute top-4 left-4">
@@ -32,12 +36,14 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="/profile">
-                <div className="p-6 rounded-lg shadow-lg bg-[#5A352A] hover:bg-[#7A4A3B] text-[#F4ECE4] transition cursor-pointer">
-                  <h3 className="font-bold text-xl text-[#FFD700] mb-2">My Profile</h3>
-                  <p className="text-sm">View and edit your adventurer profile</p>
-                </div>
-              </Link>
+              {user && (
+                <Link href={`/userProfile/${user.username}`}>
+                  <div className="p-6 rounded-lg shadow-lg bg-[#5A352A] hover:bg-[#7A4A3B] text-[#F4ECE4] transition cursor-pointer">
+                    <h3 className="font-bold text-xl text-[#FFD700] mb-2">My Profile</h3>
+                    <p className="text-sm">View and edit your adventurer profile</p>
+                  </div>
+                </Link>
+              )}
 
               <Link href="/campaigns">
                 <div className="p-6 rounded-lg shadow-lg bg-[#5A352A] hover:bg-[#7A4A3B] text-[#F4ECE4] transition cursor-pointer">

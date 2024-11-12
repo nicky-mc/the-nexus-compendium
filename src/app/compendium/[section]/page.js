@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Modal from '../../components/Modal';
+import localData from '../../data/backgrounds_and_proficiencies.json';
 
 const API_SECTIONS = {
   "ability-scores": "/api/ability-scores",
@@ -43,20 +44,29 @@ export default function SectionPage() {
 
   useEffect(() => {
     if (section) {
-      fetch(`https://www.dnd5eapi.co${API_SECTIONS[section]}`)
-        .then((res) => res.json())
-        .then((data) => setData(data));
+      if (section === "backgrounds") {
+        setData({ results: localData.backgrounds });
+      } else {
+        fetch(`https://www.dnd5eapi.co${API_SECTIONS[section]}`)
+          .then((res) => res.json())
+          .then((data) => setData(data));
+      }
     }
   }, [section]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
-    fetch(`https://www.dnd5eapi.co${item.url}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSelectedItemData(data);
-        setIsModalOpen(true);
-      });
+    if (section === "backgrounds") {
+      setSelectedItemData(item);
+      setIsModalOpen(true);
+    } else {
+      fetch(`https://www.dnd5eapi.co${item.url}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setSelectedItemData(data);
+          setIsModalOpen(true);
+        });
+    }
   };
 
   const handleAdditionalItemClick = (url) => {
@@ -187,7 +197,7 @@ export default function SectionPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data.results.map((item) => (
           <div
-            key={item.index}
+            key={item.index || item.name}
             className="p-4 bg-yellow-100 border-4 border-yellow-600 rounded-lg shadow-lg cursor-pointer"
             onClick={() => handleItemClick(item)}
           >

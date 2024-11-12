@@ -1,9 +1,8 @@
-// components/SidebarAccordian.jsx
-// components/SidebarAccordian.jsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { useCompendium } from '../context/CompendiumContext';
+import { useCompendium } from "../context/CompendiumContext";
+import localData from "../data/backgrounds_and_proficiencies.json"; // Import JSON
 
 const API_SECTIONS = {
   races: "Races",
@@ -17,9 +16,10 @@ const API_SECTIONS = {
   features: "Features",
   traits: "Traits",
   conditions: "Conditions",
-  "magic-items": "Magic Items", // Corrected key for magic items
+  "magic-items": "Magic Items",
   rules: "Rules",
   languages: "Languages",
+  proficiencies: "Proficiencies" // New section
 };
 
 export default function FullSidebarAccordion() {
@@ -35,14 +35,19 @@ export default function FullSidebarAccordion() {
     const fetchAllSections = async () => {
       const results = {};
       for (const key of Object.keys(API_SECTIONS)) {
-        try {
-          const res = await fetch(`https://www.dnd5eapi.co/api/${key}`);
-          const data = await res.json();
-          results[key] = data.results || [];
-        } catch (error) {
-          console.error(`Failed to fetch ${key}:`, error);
+        if (key === "backgrounds") {
+          results[key] = localData.backgrounds;
+        } else {
+          try {
+            const res = await fetch(`https://www.dnd5eapi.co/api/${key}`);
+            const data = await res.json();
+            results[key] = data.results || [];
+          } catch (error) {
+            console.error(`Failed to fetch ${key}:`, error);
+          }
         }
       }
+
       setSections(results);
     };
 
@@ -54,25 +59,32 @@ export default function FullSidebarAccordion() {
   };
 
   const fetchItemDetails = async (section, index) => {
-    try {
-      const res = await fetch(`https://www.dnd5eapi.co/api/${section}/${index}`);
-      const data = await res.json();
-
-      if (data.subsections) {
-        const subsectionData = await Promise.all(
-          data.subsections.map(async (sub) => {
-            const subRes = await fetch(`https://www.dnd5eapi.co${sub.url}`);
-            return await subRes.json();
-          })
-        );
-        data.subsections = subsectionData;
-      }
-
-      setSelectedItem(data);
+    if (section === "backgrounds") {
+      const item = localData.backgrounds.find((bg) => bg.name.toLowerCase() === index.toLowerCase());
+      setSelectedItem(item);
       setActiveAccordion(null);
       setShowModal(true);
-    } catch (error) {
-      console.error(`Failed to fetch details for ${index}:`, error);
+    } else {
+      try {
+        const res = await fetch(`https://www.dnd5eapi.co/api/${section}/${index}`);
+        const data = await res.json();
+
+        if (data.subsections) {
+          const subsectionData = await Promise.all(
+            data.subsections.map(async (sub) => {
+              const subRes = await fetch(`https://www.dnd5eapi.co${sub.url}`);
+              return await subRes.json();
+            })
+          );
+          data.subsections = subsectionData;
+        }
+
+        setSelectedItem(data);
+        setActiveAccordion(null);
+        setShowModal(true);
+      } catch (error) {
+        console.error(`Failed to fetch details for ${index}:`, error);
+      }
     }
   };
 
@@ -186,9 +198,9 @@ export default function FullSidebarAccordion() {
               {expandedSection === key && (
                 <ul className="ml-4 mt-2 space-y-1">
                   {filteredSections(key)?.map((item) => (
-                    <li key={item.index}>
+                    <li key={item.index || item.name}>
                       <button
-                        onClick={() => fetchItemDetails(key, item.index)}
+                        onClick={() => fetchItemDetails(key, item.index || item.name)}
                         className="text-blue-300 hover:underline"
                       >
                         {item.name}
