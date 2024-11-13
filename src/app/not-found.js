@@ -29,7 +29,7 @@ export default function NotFoundPage() {
       </main>
       <footer className="mt-8">
         <p className="text-sm">
-          &copy; {new Date().getFullYear()} Mortoza-Colwes All rights reserved.
+          &copy; {new Date().getFullYear()} THe Nexus All rights reserved.
         </p>
       </footer>
     </div>
