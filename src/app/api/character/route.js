@@ -32,7 +32,7 @@ export default async function handler(req, res) {
             notes,
           ]
         );
-
+         
         res.status(201).json({ message: 'Character created successfully' });
       } catch (error) {
         console.error(error);
