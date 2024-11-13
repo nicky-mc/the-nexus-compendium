@@ -2,42 +2,44 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs"; // Clerk hook for authentication
 
 export default function CreateCharacterForm() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const { user } = useUser(); // Get the authenticated user's data
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    async function fetchUser() {
-      const userData = await currentUser();
-      setUser(userData);
+    if (user) {
+      setUserName(user.username || user.id); // Use username or fallback to Clerk ID
     }
-    fetchUser();
-  }, []);
+  }, [user]);
 
   async function saveCharacter(formData) {
     const characterData = {
-      player_name: formData.get("player_name"),
+      player_name: userName,
       character_info: {
         character_name: formData.get("character_name"),
         race: formData.get("race"),
         class: formData.get("class"),
         background: formData.get("background"),
-        alignment: formData.get("morality"),
-        alignment: formData.get("lawful"),
-          level: formData.get( "level" ),
-        xp : formData.get("xp"),
+        alignment: {
+          morality: formData.get("morality"),
+          lawfulness: formData.get("lawful"),
+        },
+        level: parseInt(formData.get("level"), 10),
+        xp: parseInt(formData.get("xp"), 10),
       },
       stats: {
-        strength: formData.get("strength"),
-        dexterity: formData.get("dexterity"),
-        constitution: formData.get("constitution"),
-        intelligence: formData.get("intelligence"),
-        wisdom: formData.get("wisdom"),
-        charisma: formData.get("charisma"),
+        strength: parseInt(formData.get("strength"), 10),
+        dexterity: parseInt(formData.get("dexterity"), 10),
+        constitution: parseInt(formData.get("constitution"), 10),
+        intelligence: parseInt(formData.get("intelligence"), 10),
+        wisdom: parseInt(formData.get("wisdom"), 10),
+        charisma: parseInt(formData.get("charisma"), 10),
       },
-      inventory: formData.get("inventory").split(","),
-      spells: formData.get("spells").split(","),
+      inventory: formData.get("inventory").split(",").map((item) => item.trim()),
+      spells: formData.get("spells").split(",").map((spell) => spell.trim()),
       notes: formData.get("notes"),
     };
 
@@ -80,8 +82,8 @@ export default function CreateCharacterForm() {
           name="player_name"
           id="player_name"
           className="input input-bordered w-full"
-          defaultValue={user?.username || ""}
-          required
+          value={userName}
+          readOnly
         />
       </div>
 
@@ -135,24 +137,24 @@ export default function CreateCharacterForm() {
             className="input input-bordered w-full"
           />
         </div>
-        <div>
-          <select className="select w-full max-w-xs">
-            <option disabled selected>
-              Morality
-            </option>
-            <option>Good</option>
-            <option>Neutral</option>
-            <option>Evil</option>
+        <div className="form-control">
+          <label htmlFor="morality" className="label">
+            <span className="label-text text-lg">Morality:</span>
+          </label>
+          <select name="morality" id="morality" className="select select-bordered w-full">
+            <option value="Good">Good</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Evil">Evil</option>
           </select>
         </div>
-        <div>
-          <select className="select w-full max-w-xs">
-            <option disabled selected>
-              Lawful/Neutral/Chaotic
-            </option>
-            <option>Lawful</option>
-            <option>Neutral</option>
-            <option>Chaotic</option>
+        <div className="form-control">
+          <label htmlFor="lawful" className="label">
+            <span className="label-text text-lg">Lawful/Neutral/Chaotic:</span>
+          </label>
+          <select name="lawful" id="lawful" className="select select-bordered w-full">
+            <option value="Lawful">Lawful</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Chaotic">Chaotic</option>
           </select>
         </div>
       </div>

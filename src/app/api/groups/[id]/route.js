@@ -1,4 +1,4 @@
-import { db } from '@/app/utils/dbConnection';
+import { db } from '@/app/utils/dbconnection';
 
 export async function GET(req, { params }) {
   const { id } = params;
@@ -15,7 +15,7 @@ export async function GET(req, { params }) {
 }
 
 export const POST = withAuth(async (req, { params }) => {
-  const { userId } = req.auth; // Assuming userId corresponds to username
+  const { clerk_id } = req.auth; // Assuming userId corresponds to username
   const { id } = params;
   try {
     const result = await db.query(
