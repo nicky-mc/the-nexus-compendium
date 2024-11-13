@@ -1,82 +1,233 @@
 'use client';
 
-export default function CreateCharacterForm ({characters, player_name }) {
-    const router = useRouter();
-    const user = await currentUser();
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-// i need to get the users username from the User table in Supabase    
-//   username => get from user.username 
+
+export default function CreateCharacterForm() {
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const userData = await currentUser();
+      setUser(userData);
+    }
+    fetchUser();
+  }, []);
+
+  async function saveCharacter(formData) {
+    const characterData = {
+      player_name: formData.get('player_name'),
+      character_info: {
+        character_name: formData.get('character_name'),
+        race: formData.get('race'),
+        class: formData.get('class'),
+        background: formData.get('background'),
+        alignment: formData.get('alignment'),
+        xp: formData.get('xp'),
+        level: formData.get('level'),
+      },
+      stats: {
+        strength: formData.get('strength'),
+        dexterity: formData.get('dexterity'),
+        constitution: formData.get('constitution'),
+        intelligence: formData.get('intelligence'),
+        wisdom: formData.get('wisdom'),
+        charisma: formData.get('charisma'),
+      },
+      inventory: formData.get('inventory').split(','),
+      spells: formData.get('spells').split(','),
+      notes: formData.get('notes'),
+    };
+
+    try {
+      const response = await fetch('/api/characters', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(characterData),
+      });
+
+      if (response.ok) {
+        router.push('/characters');
+      } else {
+        console.error('Failed to create character');
+      }
+    } catch (error) {
+      console.error('Error creating character:', error);
+    }
+  }
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        saveCharacter(formData);
+      }}
+      className="space-y-8 p-8 bg-gray-800 text-white rounded-lg shadow-lg"
+    >
+      <h2 className="text-3xl font-bold">Create a New Character</h2>
+
+      <div className="form-control">
+        <label htmlFor="player_name" className="label">
+          <span className="label-text text-lg">Player Name:</span>
+        </label>
+        <input
+          type="text"
+          name="player_name"
+          id="player_name"
+          className="input input-bordered w-full"
+          defaultValue={user?.username || ''}
+          required
+        />
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="character_name" className="label">
+          <span className="label-text text-lg">Character Name:</span>
+        </label>
+        <input
+          type="text"
+          name="character_name"
+          id="character_name"
+          className="input input-bordered w-full"
+          required
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="form-control">
+          <label htmlFor="race" className="label">
+            <span className="label-text text-lg">Race:</span>
+          </label>
+          <input
+            type="text"
+            name="race"
+            id="race"
+            className="input input-bordered w-full"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="class" className="label">
+            <span className="label-text text-lg">Class:</span>
+          </label>
+          <input
+            type="text"
+            name="class"
+            id="class"
+            className="input input-bordered w-full"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="form-control">
+          <label htmlFor="background" className="label">
+            <span className="label-text text-lg">Background:</span>
+          </label>
+          <input
+            type="text"
+            name="background"
+            id="background"
+            className="input input-bordered w-full"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="alignment" className="label">
+            <span className="label-text text-lg">Alignment:</span>
+          </label>
+          <input
+            type="text"
+            name="alignment"
+            id="alignment"
+            className="input input-bordered w-full"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="form-control">
+          <label htmlFor="xp" className="label">
+            <span className="label-text text-lg">XP:</span>
+          </label>
+          <input
+            type="number"
+            name="xp"
+            id="xp"
+            className="input input-bordered w-full"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="level" className="label">
+            <span className="label-text text-lg">Level:</span>
+          </label>
+          <input
+            type="number"
+            name="level"
+            id="level"
+            className="input input-bordered w-full"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map((stat) => (
+          <div key={stat} className="form-control">
+            <label htmlFor={stat} className="label">
+              <span className="label-text text-lg capitalize">{stat}:</span>
+            </label>
+            <input
+              type="number"
+              name={stat}
+              id={stat}
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="inventory" className="label">
+          <span className="label-text text-lg">Inventory (comma-separated):</span>
+        </label>
+        <textarea
+          name="inventory"
+          id="inventory"
+          className="textarea textarea-bordered w-full"
+        />
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="spells" className="label">
+          <span className="label-text text-lg">Spells (comma-separated):</span>
+        </label>
+        <textarea
+          name="spells"
+          id="spells"
+          className="textarea textarea-bordered w-full"
+        />
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="notes" className="label">
+          <span className="label-text text-lg">Notes:</span>
+        </label>
+        <textarea
+          name="notes"
+          id="notes"
+          className="textarea textarea-bordered w-full"
+        />
+      </div>
+
+      <div className="form-control mt-4">
+        <button className="btn btn-success w-full" type="submit">
+          Create Character
+        </button>
+      </div>
+    </form>
+  );
 }
-
-    async function saveCharacter(formData) {
-      const updatedData = {
-        player_name: formData.get("player_name"),
-        character-info: formData.get("character_name", "race", "class", "background", "alignment" "xp", "level"),
-    }};
-      try {
-        const method = user ? 'PUT' : 'POST';
-        const response = await fetch('/api/characters', {
-          method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedData),
-        });
-        
-        return (
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                await saveCharacter(formData);
-              }}
-              className="space-y-4"
-            >
-
-
-              <div className="form-control">
-                <label htmlFor="character" className="label">
-                  <span className="label-text">Player Name:</span>
-                </label>
-                <textarea
-                  name="player_name"
-                  id="player_name"
-                  className="textarea textarea-bordered"
-                  defaultValue={character?.player_name || ""}
-                  required
-                />
-              </div>
-        
-              <div className="form-control">
-                <label htmlFor="user_bio" className="label">
-                  <span className="label-text">Bio:</span>
-                </label>
-                <textarea
-                  name="user_bio"
-                  id="user_bio"
-                  className="textarea textarea-bordered"
-                  defaultValue={user?.user_bio || ""}
-                  required
-                />
-              </div>
-        
-              <div className="form-control">
-                <label htmlFor="profile_picture_url" className="label">
-                  <span className="label-text">Profile Picture URL:</span>
-                </label>
-                <textarea
-                  name="profile_picture_url"
-                  id="profile_picture_url"
-                  className="textarea textarea-bordered"
-                  defaultValue={user?.profile_picture_url || ""}
-                />
-              </div>
-        
-              <div className="form-control mt-4">
-                <button className="btn btn-success w-full" type="submit">
-                  {user ? 'Update Profile' : 'Create Profile'}
-                </button>
-              </div>
-            </form>
-          );
-        }
