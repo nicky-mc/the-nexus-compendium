@@ -109,7 +109,7 @@ export default async function ProfilePage({ searchParams }) {
                   <p className="text-gray-300">
                     Proficiency Bonus: {character.profiecency_bonus}
                   </p>
-                  <Link href={`/characters/${character.id}`}>
+                  <Link href={`/character/${character.id}`}>
                     <button className="btn btn-primary w-full mt-4">View Details</button>
                   </Link>
                 </div>
@@ -119,7 +119,7 @@ export default async function ProfilePage({ searchParams }) {
         )}
 
         <div className="text-center mt-8">
-          <Link href="/characters/new">
+          <Link href="/character/new">
             <button className="btn btn-success btn-wide">Create New Character</button>
           </Link>
         </div>

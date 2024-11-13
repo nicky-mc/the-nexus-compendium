@@ -1,39 +1,39 @@
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+// app/character/[id]/page.js
+import { notFound } from 'next/navigation';
+import { db } from "@/app/utils/dbconnection";
+// This component will be rendered server-side
+export default async function CharacterSheet({ params }) {
+  const { id } = await params;
 
-export default function CharacterSheet({ params }) {
-  const router = useRouter();
-  const { id } = params;
-  const [character, setCharacter] = useState(null);
+  // Fetch character data server-side
+  async function fetchCharacter(id) {
+    const response = await fetch(`/api/character/${id}`, {
+      cache: 'no-store', // Ensures fresh data on each request
+    });
 
-  useEffect(() => {
-    async function fetchCharacter() {
-      const response = await fetch(`/api/characters/${id}`);
-      const data = await response.json();
-      setCharacter(data);
+    if (!response.ok) {
+      return null;
     }
-    fetchCharacter();
-  }, [id]);
 
-  async function deleteCharacter() {
-    try {
-      await fetch(`/api/characters/${id}`, { method: 'DELETE' });
-      router.push('/characters');
-    } catch (error) {
-      console.error('Failed to delete character:', error);
-    }
+    return response.json();
   }
 
-  if (!character) return <div>Loading...</div>;
+  const character = await fetchCharacter(id);
+
+  if (!character) {
+    return notFound(); // Renders a 404 page if character not found
+  }
 
   return (
     <div className="p-8 bg-gray-900 text-white min-h-screen">
       <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-md p-6">
         <header className="flex justify-between items-center border-b-2 border-gray-700 pb-4">
           <h1 className="text-4xl font-bold">{character.character_info.character_name}</h1>
-          <button className="btn btn-error" onClick={deleteCharacter}>
-            Delete Character
-          </button>
+          <form action={`/api/character/${id}/delete`} method="POST">
+            <button type="submit" className="btn btn-error">
+              Delete Character
+            </button>
+          </form>
         </header>
 
         <section className="mt-6">

@@ -25,7 +25,8 @@ export default function CreateCharacterForm() {
         background: formData.get("background"),
         alignment: formData.get("morality"),
         alignment: formData.get("lawful"),
-        level: formData.get("level"),
+          level: formData.get( "level" ),
+        xp : formData.get("xp"),
       },
       stats: {
         strength: formData.get("strength"),
@@ -137,7 +138,7 @@ export default function CreateCharacterForm() {
         <div>
           <select className="select w-full max-w-xs">
             <option disabled selected>
-              Pick your Morality alignment
+              Morality
             </option>
             <option>Good</option>
             <option>Neutral</option>
@@ -147,24 +148,12 @@ export default function CreateCharacterForm() {
         <div>
           <select className="select w-full max-w-xs">
             <option disabled selected>
-              Pick your Lawful Alignment
+              Lawful/Neutral/Chaotic
             </option>
             <option>Lawful</option>
             <option>Neutral</option>
-            <option>Chaos</option>
+            <option>Chaotic</option>
           </select>
-        </div>
-
-        <div className="form-control">
-          <label htmlFor="alignment" className="label">
-            <span className="label-text text-lg">Alignment:</span>
-          </label>
-          <input
-            type="text"
-            name="alignment"
-            id="alignment"
-            className="input input-bordered w-full"
-          />
         </div>
       </div>
 
