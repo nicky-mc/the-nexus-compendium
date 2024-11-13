@@ -1,4 +1,4 @@
-import { dbConnection } from '@/app/utils/dbconnection';
+import { dbConnection } from "@/app/utils/dbconnection";
 
 export default async function handler(req, res) {
   const db = await dbConnection();
@@ -6,67 +6,46 @@ export default async function handler(req, res) {
 
   switch (method) {
     // CREATE a new character
-    case 'POST':
+    case "POST":
       try {
-        const {
-          player_name,
-          character_info,
-          stats,
-          inventory,
-          spells,
-          notes,
-        } = req.body;
+        const { player_name, character_info, stats, inventory, spells, notes } = req.body;
 
         await db.query(
           `
-          INSERT INTO characters 
+          INSERT INTO character
           (player_name, character_info, stats, inventory, spells, notes) 
           VALUES ($1, $2, $3, $4, $5, $6)
           `,
-          [
-            player_name,
-            character_info,
-            stats,
-            inventory,
-            spells,
-            notes,
-          ]
+          [player_name, character_info, stats, inventory, spells, notes]
         );
-         
-        res.status(201).json({ message: 'Character created successfully' });
+
+        res.status(201).json({ message: "Character created successfully" });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error creating character' });
+        res.status(500).json({ error: "Error creating character" });
       }
       break;
 
     // READ all characters
-    case 'GET':
+    case "GET":
       try {
-        const characters = await db.query('SELECT * FROM characters');
+        const { id } = req.body;
+        const characters = await db.query("SELECT * FROM character WHERE id = $1", [id]);
         res.status(200).json(characters.rows);
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error fetching characters' });
+        res.status(500).json({ error: "Error fetching characters" });
       }
       break;
 
     // UPDATE a character
-    case 'PUT':
+    case "PUT":
       try {
-        const {
-          id,
-          player_name,
-          character_info,
-          stats,
-          inventory,
-          spells,
-          notes,
-        } = req.body;
+        const { id, player_name, character_info, stats, inventory, spells, notes } = req.body;
 
         await db.query(
           `
-          UPDATE characters 
+          UPDATE character
           SET 
             player_name = $1, 
             character_info = $2, 
@@ -76,40 +55,32 @@ export default async function handler(req, res) {
             notes = $6
           WHERE id = $7
           `,
-          [
-            player_name,
-            character_info,
-            stats,
-            inventory,
-            spells,
-            notes,
-            id,
-          ]
+          [player_name, character_info, stats, inventory, spells, notes, id]
         );
 
-        res.status(200).json({ message: 'Character updated successfully' });
+        res.status(200).json({ message: "Character updated successfully" });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error updating character' });
+        res.status(500).json({ error: "Error updating character" });
       }
       break;
 
     // DELETE a character
-    case 'DELETE':
+    case "DELETE":
       try {
         const { id } = req.query;
 
-        await db.query('DELETE FROM characters WHERE id = $1', [id]);
+        await db.query("DELETE FROM character WHERE id = $1", [id]);
 
-        res.status(200).json({ message: 'Character deleted successfully' });
+        res.status(200).json({ message: "Character deleted successfully" });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error deleting character' });
+        res.status(500).json({ error: "Error deleting character" });
       }
       break;
 
     default:
-      res.setHeader('Allow', ['POST', 'GET', 'PUT', 'DELETE']);
+      res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
