@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CreateCharacterForm() {
   const router = useRouter();
@@ -18,45 +17,45 @@ export default function CreateCharacterForm() {
 
   async function saveCharacter(formData) {
     const characterData = {
-      player_name: formData.get('player_name'),
+      player_name: formData.get("player_name"),
       character_info: {
-        character_name: formData.get('character_name'),
-        race: formData.get('race'),
-        class: formData.get('class'),
-        background: formData.get('background'),
-        alignment: formData.get('alignment'),
-        xp: formData.get('xp'),
-        level: formData.get('level'),
+        character_name: formData.get("character_name"),
+        race: formData.get("race"),
+        class: formData.get("class"),
+        background: formData.get("background"),
+        alignment: formData.get("morality"),
+        alignment: formData.get("lawful"),
+        level: formData.get("level"),
       },
       stats: {
-        strength: formData.get('strength'),
-        dexterity: formData.get('dexterity'),
-        constitution: formData.get('constitution'),
-        intelligence: formData.get('intelligence'),
-        wisdom: formData.get('wisdom'),
-        charisma: formData.get('charisma'),
+        strength: formData.get("strength"),
+        dexterity: formData.get("dexterity"),
+        constitution: formData.get("constitution"),
+        intelligence: formData.get("intelligence"),
+        wisdom: formData.get("wisdom"),
+        charisma: formData.get("charisma"),
       },
-      inventory: formData.get('inventory').split(','),
-      spells: formData.get('spells').split(','),
-      notes: formData.get('notes'),
+      inventory: formData.get("inventory").split(","),
+      spells: formData.get("spells").split(","),
+      notes: formData.get("notes"),
     };
 
     try {
-      const response = await fetch('/api/characters', {
-        method: 'POST',
+      const response = await fetch("/api/characters", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(characterData),
       });
 
       if (response.ok) {
-        router.push('/characters');
+        router.push("/characters");
       } else {
-        console.error('Failed to create character');
+        console.error("Failed to create character");
       }
     } catch (error) {
-      console.error('Error creating character:', error);
+      console.error("Error creating character:", error);
     }
   }
 
@@ -80,7 +79,7 @@ export default function CreateCharacterForm() {
           name="player_name"
           id="player_name"
           className="input input-bordered w-full"
-          defaultValue={user?.username || ''}
+          defaultValue={user?.username || ""}
           required
         />
       </div>
@@ -135,6 +134,27 @@ export default function CreateCharacterForm() {
             className="input input-bordered w-full"
           />
         </div>
+        <div>
+          <select className="select w-full max-w-xs">
+            <option disabled selected>
+              Pick your Morality alignment
+            </option>
+            <option>Good</option>
+            <option>Neutral</option>
+            <option>Evil</option>
+          </select>
+        </div>
+        <div>
+          <select className="select w-full max-w-xs">
+            <option disabled selected>
+              Pick your Lawful Alignment
+            </option>
+            <option>Lawful</option>
+            <option>Neutral</option>
+            <option>Chaos</option>
+          </select>
+        </div>
+
         <div className="form-control">
           <label htmlFor="alignment" className="label">
             <span className="label-text text-lg">Alignment:</span>
@@ -174,7 +194,14 @@ export default function CreateCharacterForm() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map((stat) => (
+        {[
+          "strength",
+          "dexterity",
+          "constitution",
+          "intelligence",
+          "wisdom",
+          "charisma",
+        ].map((stat) => (
           <div key={stat} className="form-control">
             <label htmlFor={stat} className="label">
               <span className="label-text text-lg capitalize">{stat}:</span>
@@ -192,7 +219,9 @@ export default function CreateCharacterForm() {
 
       <div className="form-control">
         <label htmlFor="inventory" className="label">
-          <span className="label-text text-lg">Inventory (comma-separated):</span>
+          <span className="label-text text-lg">
+            Inventory (comma-separated):
+          </span>
         </label>
         <textarea
           name="inventory"
