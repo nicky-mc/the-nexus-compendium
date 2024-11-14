@@ -168,11 +168,7 @@ export default async function CharacterSheet({ params, searchParams }) {
                     </p>
                   </div>
                 ))}
-                <div className="card bg-gray-200 p-4 rounded-lg">
-                  <p>
-                    <strong>AC:</strong> {parsedStats.ac}
-                  </p>
-                </div>
+                
                 <div className="card bg-gray-200 p-4 rounded-lg">
                   <p>
                     <strong>Max HP:</strong> {parsedHp.max_hp} | <strong>Current HP:</strong> {parsedHp.current_hp} |{" "}
