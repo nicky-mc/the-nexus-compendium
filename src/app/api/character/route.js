@@ -1,29 +1,21 @@
 import { db } from "../../utils/dbconnection";
-import { getAuth } from "@clerk/nextjs/server"; // Clerk middleware for authentication
+import { auth } from "@clerk/nextjs/server";
 
-export default getAuth(async (req, res) => {
-  const { method } = req;
-
-  switch (method) {
-    case "POST":
-      try {
-        const { userId } = req.auth; // Clerk user ID for the authenticated user
-        if (!userId) {
-          return res.status(401).json({ message: "Unauthorized" });
-        }
-
-        // Your code here to handle the POST request
-        // For example, you can insert data into the database
-        const { data } = req.body;
-        await db.collection('yourCollection').insertOne({ userId, data });
-
-        return res.status(200).json({ message: "Data inserted successfully" });
-      } catch (error) {
-        return res.status(500).json({ message: "Internal Server Error", error: error.message });
-      }
-    // Handle other HTTP methods if needed
-    default:
-      res.setHeader("Allow", ["POST"]);
-      return res.status(405).end(`Method ${method} Not Allowed`);
+export async function POST(req) {
+  const { userId } = await auth();
+  if (!userId) {
+    return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
   }
-});
+
+  try {
+    const { data } = await req.json();
+    await db.collection('yourCollection').insertOne({ userId, data });
+    return new Response(JSON.stringify({ message: "Data inserted successfully" }), { status: 200 });
+  } catch (error) {
+    return new Response(JSON.stringify({ message: "Internal Server Error", error: error.message }), { status: 500 });
+  }
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: { Allow: "POST" } });
+}
