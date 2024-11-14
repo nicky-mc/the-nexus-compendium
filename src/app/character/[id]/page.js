@@ -102,8 +102,9 @@ export default async function CharacterSheet({ params, searchParams }) {
   );
   const parsedFeatures = featuresQuery.rows[0];
 
-  const spellSlotsQuery = await db.query(`SELECT spell_slots FROM character WHERE id = $1`, [id]);
-  const parsedSpellSlots = spellSlotsQuery.rows[0].spell_slots;
+  const spellSlotsQuery = await db.query(`SELECT (spell_slots).max_spell_level, (spell_slots).max_slots, (spell_slots).used_slots, (spell_slots).can_use_magic FROM character WHERE id = $1`, [id]);
+  const parsedSpellSlots = spellSlotsQuery.rows[ 0 ];
+  console.log(parsedSpellSlots);
 
   const spellsQuery = await db.query(`SELECT spells FROM character WHERE id = $1`, [id]);
   const parsedSpells = spellsQuery.rows[0].spells;
@@ -310,8 +311,12 @@ export default async function CharacterSheet({ params, searchParams }) {
 
             <section className="mt-6">
               <h2 className="text-2xl font-semibold">Spell Slots</h2>
-              <div className="card bg-gray-200 p-4 rounded-lg">
-                <pre>{JSON.stringify(parsedSpellSlots, null, 2)}</pre>
+                <div className="card bg-gray-200 p-4 rounded-lg">
+                <p><strong>Can Use Magic:</strong> { parsedSpellSlots.can_use_magic==true ? "Yes" : "No" }</p>
+                  <p><strong>Max Spell Level:</strong> { parsedSpellSlots.max_spell_level }</p>
+                  <p><strong>Max Slots:</strong> { parsedSpellSlots.max_slots }</p>
+                  <p><strong>Used Slots:</strong> { parsedSpellSlots.used_slots }</p>
+                  
               </div>
             </section>
 
