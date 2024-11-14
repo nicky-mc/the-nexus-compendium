@@ -16,15 +16,15 @@ export default function NotFoundPage() {
         <h1 className="text-4xl font-bold">Page Not Found</h1>
         <p className="text-lg text-center max-w-md">
           We're sorry, but the page you were looking for doesn't exist. <br />{" "}
-          Maybe next time you'll roll a 20. Sorry!
+          Maybe next time you`&apos;ll roll a 20. Sorry!
         </p>
         <div className="flex gap-4 mt-4">
-          <a
+          <Link
             className="rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 transition-colors px-4 py-2"
             href="/"
           >
             Go to Home
-          </a>
+          </Link>
         </div>
       </main>
       <footer className="mt-8">
