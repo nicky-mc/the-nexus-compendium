@@ -7,7 +7,12 @@ export async function GET() {
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
-}
+} <ul className="steps steps-vertical">
+  <li className="step step-primary">Register</li>
+  <li className="step step-primary">Choose plan</li>
+  <li className="step">Purchase</li>
+  <li className="step">Receive Product</li>
+</ul>
 
 export async function POST(req) {
   try {
