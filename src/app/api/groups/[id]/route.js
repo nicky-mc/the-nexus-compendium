@@ -1,8 +1,8 @@
 import { db } from '@/app/utils/dbconnection';
-import { useUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 
 export async function GET(req, { params }) {
-  const { id } = await params;
+  const { id } = params;
   try {
     const group = await db.query('SELECT * FROM groups WHERE group_id = $1;', [id]);
     const members = await db.query(
@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
 }
 
 export const POST = async (req, { params }) => {
-  const user = useUser();
+  const user = await currentUser();
   const { id } = params;
   try {
     const result = await db.query(
@@ -30,7 +30,7 @@ export const POST = async (req, { params }) => {
 };
 
 export const DELETE = async (req, { params }) => {
-  const user = useUser();
+  const user = await currentUser();
   const { id } = params;
   try {
     await db.query('DELETE FROM player_group_junction WHERE group_id = $1 AND player = $2;', [id, user.username]);
