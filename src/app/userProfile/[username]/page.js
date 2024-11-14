@@ -5,7 +5,7 @@ import ProfileForm from "@/app/components/ProfileForm";
 import ProfileView from "@/app/components/ProfileView";
 import Link from "next/link";
 
-export default async function ProfilePage({ searchParams }) {
+export default async function ProfilePage({  searchParams }) {
   const { userId } = await auth();
 
   const userResult = await db.query(
@@ -14,7 +14,7 @@ export default async function ProfilePage({ searchParams }) {
   );
 
   const user = userResult.rows?.[0] || null;
-  const isEditing = searchParams?.edit === "true";
+  const isEditing = (await searchParams)?.edit === "true";
 
   if (user?.username) {
     const charactersResult = await db.query(
