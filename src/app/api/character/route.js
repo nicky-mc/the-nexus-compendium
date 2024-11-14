@@ -1,5 +1,5 @@
 import { db } from "../../utils/dbconnection";
-import { getAuth } from "@clerk/nextjs"; // Clerk middleware for authentication
+import { getAuth } from "@clerk/nextjs/server"; // Clerk middleware for authentication
 
 export default getAuth(async (req, res) => {
   const { method } = req;
