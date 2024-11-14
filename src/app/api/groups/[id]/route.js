@@ -1,5 +1,5 @@
 import { db } from "@/app/utils/dbconnection";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function GET(req, { params }) {
   const { id } = await params;
