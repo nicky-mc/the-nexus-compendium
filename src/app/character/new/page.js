@@ -62,7 +62,7 @@ export default async function NewCharacterPage() {
         wis: formData.get("prof_wis") === "on",
         cha: formData.get("prof_cha") === "on",
       },
-      skills: getSkillsFromFormData(formData), // Function to extract skills
+      skills: getSkillsFromFormData(formData), // Function to extract inventory
       inventory: formData.get("inventory")
         ? formData
             .get("inventory")
@@ -151,9 +151,15 @@ export default async function NewCharacterPage() {
       // Corrected SQL query with PostgreSQL-style placeholders
       // console.log(characterData);
       // console.log("gap");
-      console.log(characterData.skills);
+      // console.log(characterData.skills);
+      // console.log(characterData.skills.acrobatics);
+      // console.log(characterData.skills.acrobatics.modifier);
+      // console.log(characterData.skills.acrobatics.proficiency);
       // console.log(characterData.info.alignment.lawful);
       // console.log(characterData.info.alignment.morality);
+      // console.log(characterData.inventory);
+      // console.log(characterData.languages);
+      // console.log(characterData.spells);
       const query = `
         INSERT INTO character(player_name, info, misc_info, ac, profiecency_bonus, stats, proficiencies, skills, inventory, languages, features, hp, spell_slots, spells, notes)
 VALUES(
@@ -164,33 +170,32 @@ VALUES(
   $17,
   ($18,$19,$20,$21,$22,$23) :: STATS,
   ($24, $25, $26, $27, $28, $29) :: PROF_BONUS,
-  ((-1,false)::SKILL_MODIFIER,
-  (3,false)::SKILL_MODIFIER,
-  (0,false)::SKILL_MODIFIER,
-  (2,false)::SKILL_MODIFIER,
-  (1,false)::SKILL_MODIFIER,
-  (2,true)::SKILL_MODIFIER,
-  (5,true)::SKILL_MODIFIER,
-  (-1,false)::SKILL_MODIFIER,
-  (0,false)::SKILL_MODIFIER,
-  (5,true)::SKILL_MODIFIER,
-  (0,false)::SKILL_MODIFIER,
-  (3,false)::SKILL_MODIFIER,
-  (1,false)::SKILL_MODIFIER,
-  (1,false)::SKILL_MODIFIER,
-  (2,true)::SKILL_MODIFIER,
-  (-1,false)::SKILL_MODIFIER,
-  (-1,false)::SKILL_MODIFIER,
-  (3,false)::SKILL_MODIFIER
+  (($30,$31)::SKILL_MODIFIER,
+  ($32,$33)::SKILL_MODIFIER,
+  ($34,$35)::SKILL_MODIFIER,
+  ($36,$37)::SKILL_MODIFIER,
+  ($38,$39)::SKILL_MODIFIER,
+  ($40,$41)::SKILL_MODIFIER,
+  ($42,$43)::SKILL_MODIFIER,
+  ($44,$45)::SKILL_MODIFIER,
+  ($46,$47)::SKILL_MODIFIER,
+  ($48,$49)::SKILL_MODIFIER,
+  ($50,$51)::SKILL_MODIFIER,
+  ($52,$53)::SKILL_MODIFIER,
+  ($54,$55)::SKILL_MODIFIER,
+  ($56,$57)::SKILL_MODIFIER,
+  ($58,$59)::SKILL_MODIFIER,
+  ($60,$61)::SKILL_MODIFIER,
+  ($62,$63)::SKILL_MODIFIER,
+  ($64,$65)::SKILL_MODIFIER
   ) :: SKILLS,
-  -- name, type, quantity, description, weight.
-  ARRAY['mace (x1)', 'light crossbow (x1)', 'bolts (x20)', 'holy symbol (x1)', 'common clothes (x1)', 'belt pouch (x1)', 'backpack (x1)', 'blanket (x1)', 'candles (x10)', 'tinderbox (x1)', 'alms box (x1)', 'blocks of incense (x5)', 'censer (x1)', 'vestments (x1)', 'waterskin (x5)'],
-  ARRAY['Common','Elvish','Dwarvish','Gnomish'],
-  ('','+1 to each','none','Speed + 30', 'Common  + one' ,'insight, religion','two of your choice','holy symbol, prayer book','see omens in every event','Charity','Everything I do is for the common people','I am inflexible in my thinking') :: FEATURES,
-  (10,10,0) :: HIT_POINTS,
-  (1,3,3,true) :: SPELL_SLOTS,
-  ARRAY['bane', 'sacred flame', 'sanctuary'],
-  'Interesting notes about this character.'
+  $66,
+  $67,
+  ($68,$69,$70,$71,$72,$73,$74,$75,$76,$77,$78,$79) :: FEATURES,
+  ($80,$81,$82) :: HIT_POINTS,
+  ($83,$84,$85,$86) :: SPELL_SLOTS,
+  $87,
+  $88
 );
       `;
       const values = [
@@ -223,6 +228,66 @@ VALUES(
         characterData.proficiencies.int,
         characterData.proficiencies.wis,
         characterData.proficiencies.cha,
+        characterData.skills.acrobatics.modifier,
+        characterData.skills.acrobatics.proficiency,
+        characterData.skills.animal_handling.modifier,
+        characterData.skills.animal_handling.proficiency,
+        characterData.skills.arcana.modifier,
+        characterData.skills.arcana.proficiency,
+        characterData.skills.athletics.modifier,
+        characterData.skills.athletics.proficiency,
+        characterData.skills.deception.modifier,
+        characterData.skills.deception.proficiency,
+        characterData.skills.history.modifier,
+        characterData.skills.history.proficiency,
+        characterData.skills.insight.modifier,
+        characterData.skills.insight.proficiency,
+        characterData.skills.intimidation.modifier,
+        characterData.skills.intimidation.proficiency,
+        characterData.skills.investigation.modifier,
+        characterData.skills.investigation.proficiency,
+        characterData.skills.medicine.modifier,
+        characterData.skills.medicine.proficiency,
+        characterData.skills.nature.modifier,
+        characterData.skills.nature.proficiency,
+        characterData.skills.perception.modifier,
+        characterData.skills.perception.proficiency,
+        characterData.skills.performance.modifier,
+        characterData.skills.performance.proficiency,
+        characterData.skills.persuasion.modifier,
+        characterData.skills.persuasion.proficiency,
+        characterData.skills.religion.modifier,
+        characterData.skills.religion.proficiency,
+        characterData.skills.sleight_of_hand.modifier,
+        characterData.skills.sleight_of_hand.proficiency,
+        characterData.skills.stealth.modifier,
+        characterData.skills.stealth.proficiency,
+        characterData.skills.survival.modifier,
+        characterData.skills.survival.proficiency,
+        characterData.inventory,
+        characterData.languages,
+        characterData.features.race_and_subrace,
+        characterData.features.race_as_increase,
+        characterData.features.race_profiencies,
+        characterData.features.race_traits,
+        characterData.features.race_languages,
+        characterData.features.background_profiencies,
+        characterData.features.background_languages,
+        characterData.features.background_equipment,
+        characterData.features.traits,
+        characterData.features.ideals,
+        characterData.features.bonds,
+        characterData.features.flaws,
+        characterData.hp.max_hp,
+        characterData.hp.current_hp,
+        characterData.hp.temp_hp,
+        characterData.spell_slots.max_spell_level,
+        characterData.spell_slots.max_slots,
+        characterData.spell_slots.used_slots,
+        characterData.spell_slots.can_use_magic,
+        characterData.spells,
+        characterData.notes,
+
         // JSON.stringify(characterData.info),
         // JSON.stringify(characterData.misc_info),
         // JSON.stringify(characterData.stats),
@@ -234,7 +299,6 @@ VALUES(
         // JSON.stringify(characterData.hp),
         // JSON.stringify(characterData.spell_slots),
         // JSON.stringify(characterData.spells),
-        // characterData.notes,
       ];
 
       await db.query(query, values);
