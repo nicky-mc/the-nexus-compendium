@@ -102,9 +102,15 @@ export default async function CharacterSheet({ params, searchParams }) {
   );
   const parsedFeatures = featuresQuery.rows[0];
 
+  const spellSlotsQuery = await db.query(`SELECT spell_slots FROM character WHERE id = $1`, [id]);
+  const parsedSpellSlots = spellSlotsQuery.rows[0].spell_slots;
+
+  const spellsQuery = await db.query(`SELECT spells FROM character WHERE id = $1`, [id]);
+  const parsedSpells = spellsQuery.rows[0].spells;
+
   // Check if we are in edit mode
   const isEditing = (await searchParams)?.edit === "true";
-
+ 
   return (
     <div className="p-8 bg-grey-900 text-white min-h-screen">
       <div className="max-w-5xl mx-auto bg-white text-black rounded-lg shadow-md p-6">
@@ -128,6 +134,8 @@ export default async function CharacterSheet({ params, searchParams }) {
               parsedHp,
               parsedInventory,
               parsedFeatures,
+              parsedSpellSlots,
+              parsedSpells,
             }}
           />
         ) : (
@@ -198,77 +206,77 @@ export default async function CharacterSheet({ params, searchParams }) {
                     <strong> Proficient: </strong> {parsedSkills.arcana_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>athletics: </strong>
+                    <strong>Athletics: </strong>
                     <strong> Modifier: </strong> {parsedSkills.athletics_modifier}
                     <strong> Proficient: </strong> {parsedSkills.athletics_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>deception: </strong>
+                    <strong>Deception: </strong>
                     <strong> Modifier: </strong> {parsedSkills.deception_modifier}
                     <strong> Proficient: </strong> {parsedSkills.deception_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>history: </strong>
+                    <strong>History: </strong>
                     <strong> Modifier: </strong> {parsedSkills.history_modifier}
                     <strong> Proficient: </strong> {parsedSkills.history_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>insight: </strong>
+                    <strong>Insight: </strong>
                     <strong> Modifier: </strong> {parsedSkills.insight_modifier}
                     <strong> Proficient: </strong> {parsedSkills.insight_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>intimidation: </strong>
+                    <strong>Intimidation: </strong>
                     <strong> Modifier: </strong> {parsedSkills.intimidation_modifier}
                     <strong> Proficient: </strong> {parsedSkills.intimidation_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>investigation: </strong>
+                    <strong>Investigation: </strong>
                     <strong> Modifier: </strong> {parsedSkills.investigation_modifier}
                     <strong> Proficient: </strong> {parsedSkills.investigation_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>medicine: </strong>
+                    <strong>Medicine: </strong>
                     <strong> Modifier: </strong> {parsedSkills.medicine_modifier}
                     <strong> Proficient: </strong> {parsedSkills.medicine_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>nature: </strong>
+                    <strong>Nature: </strong>
                     <strong> Modifier: </strong> {parsedSkills.nature_modifier}
                     <strong> Proficient: </strong> {parsedSkills.nature_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>perception: </strong>
+                    <strong>Perception: </strong>
                     <strong> Modifier: </strong> {parsedSkills.perception_modifier}
                     <strong> Proficient: </strong> {parsedSkills.perception_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>performance: </strong>
+                    <strong>Performance: </strong>
                     <strong> Modifier: </strong> {parsedSkills.performance_modifier}
                     <strong> Proficient: </strong> {parsedSkills.performance_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>persuasion: </strong>
+                    <strong>Persuasion: </strong>
                     <strong> Modifier: </strong> {parsedSkills.persuasion_modifier}
                     <strong> Proficient: </strong> {parsedSkills.persuasion_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>religion: </strong>
+                    <strong>Religion: </strong>
                     <strong> Modifier: </strong> {parsedSkills.religion_modifier}
                     <strong> Proficient: </strong> {parsedSkills.religion_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>slight_of_hand: </strong>
+                    <strong>Slight of Hand: </strong>
                     <strong> Modifier: </strong> {parsedSkills.slight_of_hand_modifier}
                     <strong> Proficient: </strong> {parsedSkills.slight_of_hand_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>stealth: </strong>
+                    <strong>Stealth: </strong>
                     <strong> Modifier: </strong> {parsedSkills.stealth_modifier}
                     <strong> Proficient: </strong> {parsedSkills.stealth_prof == true ? "Yes" : "No"}
                   </p>
                   <p>
-                    <strong>survival: </strong>
+                    <strong>Survival: </strong>
                     <strong> Modifier: </strong> {parsedSkills.survival_modifier}
                     <strong> Proficient: </strong> {parsedSkills.survival_prof == true ? "Yes" : "No"}
                   </p>
@@ -295,6 +303,24 @@ export default async function CharacterSheet({ params, searchParams }) {
                 <ul className="list-disc list-inside">
                   {parsedInventory.map((item, index) => (
                     <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            <section className="mt-6">
+              <h2 className="text-2xl font-semibold">Spell Slots</h2>
+              <div className="card bg-gray-200 p-4 rounded-lg">
+                <pre>{JSON.stringify(parsedSpellSlots, null, 2)}</pre>
+              </div>
+            </section>
+
+            <section className="mt-6">
+              <h2 className="text-2xl font-semibold">Spells</h2>
+              <div className="card bg-gray-200 p-4 rounded-lg">
+                <ul className="list-disc list-inside">
+                  {parsedSpells.map((spell, index) => (
+                    <li key={index}>{spell}</li>
                   ))}
                 </ul>
               </div>
