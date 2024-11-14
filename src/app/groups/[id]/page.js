@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
 
 export default function GroupDetails() {
   const { id } = useParams();
@@ -17,15 +18,15 @@ export default function GroupDetails() {
       try {
         const res = await fetch(`/api/groups/${id}`);
         if (!res.ok) {
-          throw new Error('Failed to fetch group details');
+          throw new Error("Failed to fetch group details");
         }
         const data = await res.json();
-        console.log('Response data:', data); // Log the response data
+        console.log("Response data:", data); // Log the response data
         setGroup(data.group);
         setMembers(data.members);
         setIsMember(data.members.some((member) => member.username === user?.username));
       } catch (err) {
-        console.error('Error fetching group details:', err); // Log the error to the console
+        console.error("Error fetching group details:", err); // Log the error to the console
         setError(err.message);
       }
     };
@@ -33,32 +34,34 @@ export default function GroupDetails() {
     fetchGroupDetails();
   }, [id, user]);
 
-  console.log('Group:', group); // Log the group state
-  console.log('Members:', members); // Log the members state
-  console.log('Is Member:', isMember); // Log the isMember state
+  console.log("Group:", group); // Log the group state
+  console.log("Members:", members); // Log the members state
+  console.log("Is Member:", isMember); // Log the isMember state
 
   const handleJoin = async () => {
     try {
-      const res = await fetch(`/api/groups/${id}/join`, { method: 'POST' });
+      const res = await fetch(`/api/groups/${id}/join`, { method: "POST" });
       if (!res.ok) {
-        throw new Error('Failed to join group');
+        throw new Error("Failed to join group");
       }
       setIsMember(true);
+      // revalidatePath(`/groups/${id}`);
     } catch (err) {
-      console.error('Error joining group:', err); // Log the error to the console
+      console.error("Error joining group:", err); // Log the error to the console
       setError(err.message);
     }
   };
 
   const handleLeave = async () => {
     try {
-      const res = await fetch(`/api/groups/${id}/leave`, { method: 'DELETE' });
+      const res = await fetch(`/api/groups/${id}/leave`, { method: "DELETE" });
       if (!res.ok) {
-        throw new Error('Failed to leave group');
+        throw new Error("Failed to leave group");
       }
       setIsMember(false);
+      // revalidatePath(`/groups/${id}`);
     } catch (err) {
-      console.error('Error leaving group:', err); // Log the error to the console
+      console.error("Error leaving group:", err); // Log the error to the console
       setError(err.message);
     }
   };
@@ -67,7 +70,19 @@ export default function GroupDetails() {
     return (
       <div className="alert alert-error shadow-lg">
         <div>
-          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="stroke-current flex-shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
           <span>Error: {error}</span>
         </div>
       </div>
@@ -101,7 +116,19 @@ export default function GroupDetails() {
   ) : (
     <div className="alert alert-info shadow-lg">
       <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          className="stroke-current flex-shrink-0 w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          ></path>
+        </svg>
         <span>Loading...</span>
       </div>
     </div>
