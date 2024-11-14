@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import EditCharacter from "@/app/components/EditCharacter"; // Import client component for editing
 
 export default async function CharacterSheet({ params, searchParams }) {
-  const id = params.id;
+  const id = (await params).id;
   const user = await currentUser();
   const username = user.username;
 
@@ -25,14 +25,18 @@ export default async function CharacterSheet({ params, searchParams }) {
   }
 
   // Fetch character data
-  const char_info = await db.query(`
+  const char_info = await db.query(
+    `
     SELECT player_name, (info).char_name, (info).race, (info).class, (info).background, 
     ((info).alignment).lawful, ((info).alignment).morality, 
     (info).xp, (info).level 
-    FROM character WHERE id = $1`, [id]);
+    FROM character WHERE id = $1`,
+    [id]
+  );
   const character = char_info.rows[0];
 
-  const misc_info = await db.query(`
+  const misc_info = await db.query(
+    `
     SELECT 
       (misc_info).sex, 
       (misc_info).size, 
@@ -41,17 +45,23 @@ export default async function CharacterSheet({ params, searchParams }) {
       (misc_info).speed, 
       (misc_info).initiative,
       notes 
-    FROM character WHERE id = $1`, [id]);
+    FROM character WHERE id = $1`,
+    [id]
+  );
   const parsedMisc = misc_info.rows[0];
 
-  const stats = await db.query(`
+  const stats = await db.query(
+    `
     SELECT ac, profiecency_bonus, 
     (stats).strength, (stats).dexterity, (stats).constitution, 
     (stats).intelligence, (stats).wisdom, (stats).charisma 
-    FROM character WHERE id = $1`, [id]);
+    FROM character WHERE id = $1`,
+    [id]
+  );
   const parsedStats = stats.rows[0];
 
-  const skills = await db.query(`
+  const skills = await db.query(
+    `
     SELECT 
     ((skills).acrobatics).modifier AS acrobatics_modifier, ((skills).acrobatics).proficiency AS acrobatics_prof,
     ((skills).animal_handling).modifier AS animal_handling_modifier, ((skills).animal_handling).proficiency AS animal_handling_prof,
@@ -71,24 +81,29 @@ export default async function CharacterSheet({ params, searchParams }) {
     ((skills).slight_of_hand).modifier AS slight_of_hand_modifier, ((skills).slight_of_hand).proficiency AS slight_of_hand_prof,
     ((skills).stealth).modifier AS stealth_modifier, ((skills).stealth).proficiency AS stealth_prof,
     ((skills).survival).modifier AS survival_modifier, ((skills).survival).proficiency AS survival_prof
-    FROM character WHERE id = $1`, [id]);
+    FROM character WHERE id = $1`,
+    [id]
+  );
   const parsedSkills = skills.rows[0];
-
+  console.log(parsedSkills);
   const inventory = await db.query(`SELECT inventory FROM character WHERE id = $1`, [id]);
   const parsedInventory = inventory.rows[0].inventory;
 
   const hp = await db.query(`SELECT (hp).max_hp, (hp).current_hp, (hp).temp_hp FROM character WHERE id = $1`, [id]);
   const parsedHp = hp.rows[0];
 
-  const featuresQuery = await db.query(`
+  const featuresQuery = await db.query(
+    `
     SELECT languages, 
     (features).race_and_subrace, (features).traits, 
     (features).ideals, (features).bonds, (features).flaws 
-    FROM character WHERE id = $1`, [id]);
+    FROM character WHERE id = $1`,
+    [id]
+  );
   const parsedFeatures = featuresQuery.rows[0];
 
   // Check if we are in edit mode
-  const isEditing = searchParams?.edit === "true";
+  const isEditing = (await searchParams)?.edit === "true";
 
   return (
     <div className="p-8 bg-grey-900 text-white min-h-screen">
@@ -96,24 +111,49 @@ export default async function CharacterSheet({ params, searchParams }) {
         <header className="flex justify-between items-center border-b-2 border-gray-700 pb-4">
           <h1 className="text-5xl font-bold">{character.char_name}</h1>
           {!isEditing && (
-            <a href={`/character/${id}?edit=true`} className="btn btn-primary">Edit</a>
+            <a href={`/character/${id}?edit=true`} className="btn btn-primary">
+              Edit
+            </a>
           )}
         </header>
 
         {isEditing ? (
-          <EditCharacter id={id} initialData={{ character, parsedStats, parsedMisc, parsedSkills, parsedHp, parsedInventory, parsedFeatures }} />
+          <EditCharacter
+            id={id}
+            initialData={{
+              character,
+              parsedStats,
+              parsedMisc,
+              parsedSkills,
+              parsedHp,
+              parsedInventory,
+              parsedFeatures,
+            }}
+          />
         ) : (
           <>
             <section className="mt-6">
               <h2 className="text-2xl font-semibold">Character Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="card bg-gray-200 p-4 rounded-lg">
-                  <p><strong>Player Name:</strong> {character.player_name}</p>
-                  <p><strong>Class:</strong> {character.class}</p>
-                  <p><strong>Race:</strong> {character.race}</p>
-                  <p><strong>Background:</strong> {character.background}</p>
-                  <p><strong>Alignment:</strong> {character.lawful} {character.morality}</p>
-                  <p><strong>XP:</strong> {character.xp} | <strong>Level:</strong> {character.level}</p>
+                  <p>
+                    <strong>Player Name:</strong> {character.player_name}
+                  </p>
+                  <p>
+                    <strong>Class:</strong> {character.class}
+                  </p>
+                  <p>
+                    <strong>Race:</strong> {character.race}
+                  </p>
+                  <p>
+                    <strong>Background:</strong> {character.background}
+                  </p>
+                  <p>
+                    <strong>Alignment:</strong> {character.lawful} {character.morality}
+                  </p>
+                  <p>
+                    <strong>XP:</strong> {character.xp} | <strong>Level:</strong> {character.level}
+                  </p>
                 </div>
               </div>
             </section>
@@ -123,14 +163,21 @@ export default async function CharacterSheet({ params, searchParams }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(parsedStats).map(([stat, value]) => (
                   <div key={stat} className="card bg-gray-200 p-4 rounded-lg">
-                    <p><strong>{stat.toUpperCase()}:</strong> {value}</p>
+                    <p>
+                      <strong>{stat.toUpperCase()}:</strong> {value}
+                    </p>
                   </div>
                 ))}
                 <div className="card bg-gray-200 p-4 rounded-lg">
-                  <p><strong>AC:</strong> {parsedStats.ac}</p>
+                  <p>
+                    <strong>AC:</strong> {parsedStats.ac}
+                  </p>
                 </div>
                 <div className="card bg-gray-200 p-4 rounded-lg">
-                  <p><strong>Max HP:</strong> {parsedHp.max_hp} | <strong>Current HP:</strong> {parsedHp.current_hp} | <strong>Temp HP:</strong> {parsedHp.temp_hp}</p>
+                  <p>
+                    <strong>Max HP:</strong> {parsedHp.max_hp} | <strong>Current HP:</strong> {parsedHp.current_hp} |{" "}
+                    <strong>Temp HP:</strong> {parsedHp.temp_hp}
+                  </p>
                 </div>
               </div>
             </section>
@@ -138,11 +185,98 @@ export default async function CharacterSheet({ params, searchParams }) {
             <section className="mt-6">
               <h2 className="text-2xl font-semibold">Skills</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(parsedSkills).map(([skill, value]) => (
-                  <div key={skill} className="card bg-gray-200 p-4 rounded-lg">
-                    <p>{skill.replace("_", " ")}: <strong>Modifier:</strong> {value.modifier} | <strong>Proficiency:</strong> {value.proficiency ? "Yes" : "No"}</p>
-                  </div>
-                ))}
+                <div className="card bg-gray-200 p-4 rounded-lg">
+                  <p>
+                    <strong>Acrobatics: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.acrobatics_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.acrobatics_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>Animal Handling: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.animal_handling_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.animal_handling_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>Arcana: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.arcana_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.arcana_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>athletics: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.athletics_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.athletics_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>deception: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.deception_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.deception_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>history: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.history_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.history_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>insight: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.insight_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.insight_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>intimidation: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.intimidation_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.intimidation_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>investigation: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.investigation_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.investigation_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>medicine: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.medicine_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.medicine_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>nature: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.nature_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.nature_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>perception: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.perception_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.perception_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>performance: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.performance_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.performance_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>persuasion: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.persuasion_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.persuasion_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>religion: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.religion_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.religion_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>slight_of_hand: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.slight_of_hand_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.slight_of_hand_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>stealth: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.stealth_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.stealth_prof == true ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <strong>survival: </strong>
+                    <strong> Modifier: </strong> {parsedSkills.survival_modifier}
+                    <strong> Proficient: </strong> {parsedSkills.survival_prof == true ? "Yes" : "No"}
+                  </p>
+                </div>
               </div>
             </section>
 
@@ -151,7 +285,9 @@ export default async function CharacterSheet({ params, searchParams }) {
               <div className="card bg-gray-200 p-4 rounded-lg">
                 <ul className="list-disc list-inside">
                   {Object.entries(parsedFeatures).map(([key, value]) => (
-                    <li key={key}><strong>{key.replace("_", " ")}:</strong> {value}</li>
+                    <li key={key}>
+                      <strong>{key.replace("_", " ")}:</strong> {value}
+                    </li>
                   ))}
                 </ul>
               </div>
