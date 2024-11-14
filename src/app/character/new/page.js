@@ -20,9 +20,10 @@ export default async function NewCharacterPage() {
   // Define the server action for saving the character
   async function saveCharacter(formData) {
     "use server";
-
+    const user = await currentUser();
+    const username = user.username;
     const characterData = {
-      player_name: clerkId, // Use clerk_id as the player_name
+      player_name: username, // Use clerk_id as the player_name
       info: {
         char_name: formData.get("char_name"), // Adjusted field name
         race: formData.get("race"),
@@ -148,33 +149,98 @@ export default async function NewCharacterPage() {
 
     try {
       // Corrected SQL query with PostgreSQL-style placeholders
+      // console.log(characterData);
+      // console.log("gap");
+      console.log(characterData.skills);
+      // console.log(characterData.info.alignment.lawful);
+      // console.log(characterData.info.alignment.morality);
       const query = `
-        INSERT INTO characters 
-        (player_name, info, misc_info, ac, profiecency_bonus, stats, proficiencies, skills, inventory, languages, features, hp, spell_slots, spells, notes) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        INSERT INTO character(player_name, info, misc_info, ac, profiecency_bonus, stats, proficiencies, skills, inventory, languages, features, hp, spell_slots, spells, notes)
+VALUES(
+  $1,
+  ($2,$3,$4,$5,($6,$7)::ALIGNMENT_CHART,$8,$9) :: CHARACTER_INFO,
+  ($10,$11,$12,$13,$14,$15) :: MISC_INFO,
+  $16,
+  $17,
+  ($18,$19,$20,$21,$22,$23) :: STATS,
+  ($24, $25, $26, $27, $28, $29) :: PROF_BONUS,
+  ((-1,false)::SKILL_MODIFIER,
+  (3,false)::SKILL_MODIFIER,
+  (0,false)::SKILL_MODIFIER,
+  (2,false)::SKILL_MODIFIER,
+  (1,false)::SKILL_MODIFIER,
+  (2,true)::SKILL_MODIFIER,
+  (5,true)::SKILL_MODIFIER,
+  (-1,false)::SKILL_MODIFIER,
+  (0,false)::SKILL_MODIFIER,
+  (5,true)::SKILL_MODIFIER,
+  (0,false)::SKILL_MODIFIER,
+  (3,false)::SKILL_MODIFIER,
+  (1,false)::SKILL_MODIFIER,
+  (1,false)::SKILL_MODIFIER,
+  (2,true)::SKILL_MODIFIER,
+  (-1,false)::SKILL_MODIFIER,
+  (-1,false)::SKILL_MODIFIER,
+  (3,false)::SKILL_MODIFIER
+  ) :: SKILLS,
+  -- name, type, quantity, description, weight.
+  ARRAY['mace (x1)', 'light crossbow (x1)', 'bolts (x20)', 'holy symbol (x1)', 'common clothes (x1)', 'belt pouch (x1)', 'backpack (x1)', 'blanket (x1)', 'candles (x10)', 'tinderbox (x1)', 'alms box (x1)', 'blocks of incense (x5)', 'censer (x1)', 'vestments (x1)', 'waterskin (x5)'],
+  ARRAY['Common','Elvish','Dwarvish','Gnomish'],
+  ('','+1 to each','none','Speed + 30', 'Common  + one' ,'insight, religion','two of your choice','holy symbol, prayer book','see omens in every event','Charity','Everything I do is for the common people','I am inflexible in my thinking') :: FEATURES,
+  (10,10,0) :: HIT_POINTS,
+  (1,3,3,true) :: SPELL_SLOTS,
+  ARRAY['bane', 'sacred flame', 'sanctuary'],
+  'Interesting notes about this character.'
+);
       `;
       const values = [
         characterData.player_name,
-        JSON.stringify(characterData.info),
-        JSON.stringify(characterData.misc_info),
+        characterData.info.char_name,
+        characterData.info.race,
+        characterData.info.class,
+        characterData.info.background,
+        characterData.info.alignment.lawful,
+        characterData.info.alignment.morality,
+        characterData.info.xp,
+        characterData.info.level,
+        characterData.misc_info.sex,
+        characterData.misc_info.size,
+        characterData.misc_info.height,
+        characterData.misc_info.weight,
+        characterData.misc_info.speed,
+        characterData.misc_info.initiative,
         characterData.ac,
         characterData.profiecency_bonus,
-        JSON.stringify(characterData.stats),
-        JSON.stringify(characterData.proficiencies),
-        JSON.stringify(characterData.skills),
-        JSON.stringify(characterData.inventory),
-        JSON.stringify(characterData.languages),
-        JSON.stringify(characterData.features),
-        JSON.stringify(characterData.hp),
-        JSON.stringify(characterData.spell_slots),
-        JSON.stringify(characterData.spells),
-        characterData.notes,
+        characterData.stats.strength,
+        characterData.stats.dexterity,
+        characterData.stats.constitution,
+        characterData.stats.intelligence,
+        characterData.stats.wisdom,
+        characterData.stats.charisma,
+        characterData.proficiencies.str,
+        characterData.proficiencies.dex,
+        characterData.proficiencies.con,
+        characterData.proficiencies.int,
+        characterData.proficiencies.wis,
+        characterData.proficiencies.cha,
+        // JSON.stringify(characterData.info),
+        // JSON.stringify(characterData.misc_info),
+        // JSON.stringify(characterData.stats),
+        // JSON.stringify(characterData.proficiencies),
+        // JSON.stringify(characterData.skills),
+        // JSON.stringify(characterData.inventory),
+        // JSON.stringify(characterData.languages),
+        // JSON.stringify(characterData.features),
+        // JSON.stringify(characterData.hp),
+        // JSON.stringify(characterData.spell_slots),
+        // JSON.stringify(characterData.spells),
+        // characterData.notes,
       ];
 
       await db.query(query, values);
 
       // Redirect after successful creation
-      redirect("/characters");
+      //! redirect("/characters"); causes some sort of error.
     } catch (error) {
       console.error("Error creating character:", error);
       // Handle errors as needed

@@ -16,21 +16,23 @@ CREATE TABLE IF NOT EXISTS users(
 
 -- CREATE DOMAIN levels AS NON_NEGATIVE_INT CHECK(VALUE <= 20 AND VALUE > 0);
 
+-- DROP TYPE alignment_chart CASCADE
+CREATE TYPE alignment_chart AS(
+  lawful TEXT,
+  morality TEXT
+);
 
--- CREATE TYPE alignment_chart AS(
---   lawful LAW_AXIS,
---   morality MORALITY_AXIS
--- );
+-- DROP TYPE character_info
 
--- CREATE TYPE character_info AS (
--- char_name REQUIRED_VARCHAR,
--- race REQUIRED_VARCHAR,
--- class REQUIRED_VARCHAR,
--- background REQUIRED_VARCHAR,
--- alignment ALIGNMENT_CHART,
--- xp NON_NEGATIVE_INT,--TYPE GOT CHANGED LATER
--- level LEVELS--TPYE GOT CHANGED LATER
--- );
+CREATE TYPE character_info AS (
+char_name REQUIRED_VARCHAR,
+race REQUIRED_VARCHAR,
+class REQUIRED_VARCHAR,
+background REQUIRED_VARCHAR,
+alignment ALIGNMENT_CHART,
+xp POSITIVE_INT,--TYPE GOT CHANGED LATER
+level POSITIVE_INT--TPYE GOT CHANGED LATER
+);
 
 -- CREATE TYPE  misc_info AS(
 --   sex VARCHAR(1),
@@ -149,6 +151,8 @@ CREATE TYPE features AS (
 -- );
 
 -- ALTER TYPE spell ALTER ATTRIBUTE spell_level SET DATA TYPE POSITIVE_INT;
+
+
 
 
 CREATE TYPE skills AS (
