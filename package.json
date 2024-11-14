@@ -1,5 +1,5 @@
 {
-  "name": "final-project",
+  "name": "the-nexus",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -23,7 +23,6 @@
     "tailwindcss": "^3.4.1"
   },
   "exports": {
-    "./": "./index.js",
     "./utils/dbconnection": "./src/app/utils/dbconnection.js",
     "./api/character/route": "./src/app/api/character/route.js"
   }
