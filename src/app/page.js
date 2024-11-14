@@ -45,9 +45,9 @@ export default function Home() {
                 </Link>
               )}
 
-              <Link href="/campaigns">
+              <Link href="/groups">
                 <div className="p-6 rounded-lg shadow-lg bg-[#5A352A] hover:bg-[#7A4A3B] text-[#F4ECE4] transition cursor-pointer">
-                  <h3 className="font-bold text-xl text-[#FFD700] mb-2">Join Campaign</h3>
+                  <h3 className="font-bold text-xl text-[#FFD700] mb-2">Join A Group</h3>
                   <p className="text-sm">Find and join ongoing campaigns</p>
                 </div>
               </Link>
